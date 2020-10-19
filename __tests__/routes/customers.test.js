@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
-const Profiles = require('../../api/groomer/groomerModel');
-const profileRouter = require('../../api/groomer/groomerRouter');
+const Profiles = require('../../api/customer/customerModel');
+const profileRouter = require('../../api/customer/customerRouter');
 const server = express();
 server.use(express.json());
 
@@ -11,17 +11,17 @@ jest.mock('../../api/middleware/authRequired', () =>
   jest.fn((req, res, next) => next())
 );
 
-describe('groomers router endpoints', () => {
+describe('customers router endpoints', () => {
   beforeAll(() => {
     // This is the module/route being tested
-    server.use(['/profile', '/groomers'], profileRouter);
+    server.use(['/profile', '/customers'], profileRouter);
     jest.clearAllMocks();
   });
 
-  describe('GET /groomers', () => {
+  describe('GET /customers', () => {
     it('should return 200', async () => {
       Profiles.findAll.mockResolvedValue([]);
-      const res = await request(server).get('/groomers');
+      const res = await request(server).get('/customers');
 
       expect(res.status).toBe(200);
       expect(res.body.length).toBe(0);
@@ -29,7 +29,7 @@ describe('groomers router endpoints', () => {
     });
   });
 
-  describe('GET /groomers/:id', () => {
+  describe('GET /customers/:id', () => {
     it('should return 200 when profile found', async () => {
       Profiles.findById.mockResolvedValue({
         id: '1',
@@ -44,13 +44,8 @@ describe('groomers router endpoints', () => {
         state: 'Georgia',
         country: 'USA',
         photo_url: 'somewhere.com/photo.jpg',
-        walk_rate: '2345',
-        day_care_rate: '12345',
-        vet_visit_rate: '2000',
-
-
       });
-      const res = await request(server).get('/groomers/1');
+      const res = await request(server).get('/customers/1');
 
       expect(res.status).toBe(200);
       expect(res.body.name).toBe('Bob');
@@ -59,7 +54,7 @@ describe('groomers router endpoints', () => {
 
     it('should return 404 when no user found', async () => {
       Profiles.findById.mockResolvedValue();
-      const res = await request(server).get('/groomers/1');
+      const res = await request(server).get('/customers/1');
 
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('ProfileNotFound');
